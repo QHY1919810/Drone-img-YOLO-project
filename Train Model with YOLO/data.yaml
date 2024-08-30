@@ -1,0 +1,11 @@
+# use absolute paths
+
+path: ./data  # dataset root dir
+train: D:\YOLOV8_orthomosaic_Aug2024\final_drone_dataset\train
+val: D:\YOLOV8_orthomosaic_Aug2024\final_drone_dataset\trainVal  # val images (relative to 'path') 
+test: D:\YOLOV8_orthomosaic_Aug2024\final_drone_dataset\testing # test images (optional)
+
+
+nc: 5
+names: ['poplar', 'spruce', 'pine','larch', 'snag']
+

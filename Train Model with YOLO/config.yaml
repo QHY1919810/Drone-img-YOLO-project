@@ -1,0 +1,140 @@
+
+# paths to pretrained model (.pt file) and dataset definition file (.yaml)
+model: "./YOLO Model\\best.pt"  # Specifies the model file for training.  
+data: "./data.yaml"          # Path to the dataset configuration file
+project: 'runs'         # Name of the project directory where training outputs are saved.
+name: 'train'  # Name of the training run. Used for creating a subdirectory within the project folder, where training logs and outputs are stored.
+pretrained: false     # whether to use a pretrained model
+
+
+# main training hyper-parameters
+epochs: 1000        # one epoch = one full pass through training set (each img included once)
+patience: 300     # number of epochs after which to STOP training (not decrease LR) after no val loss improvement
+batch: 2        # number of images in each batch
+imgsz: 2048   # size of image (should be a multiple of 32)
+optimizer: Adam  # Choice of optimizer for training. Options include SGD, Adam, AdamW, NAdam, RAdam, RMSProp etc., or auto for automatic selection based on model configuration. Affects convergence speed and stability.
+device: 0,1   # cuda for GPU, cpu for CPU  'cuda' [0,1] 
+nms: true        # Initial learning rate (i.e. SGD=1E-2, Adam=1E-3) . Adjusting this value is crucial for the optimization process, influencing how rapidly model weights are updated.
+iou: 0.7         # Intersection Over Union (IoU) threshold for Non-Maximum Suppression (NMS). Higher values result in fewer detections by eliminating overlapping boxes, useful for reducing duplicates.
+lr0: 0.001       # Initial learning rate (i.e. SGD=1E-2, Adam=1E-3) . Adjusting this value is crucial for the optimization process, influencing how rapidly model weights are updated.
+lrf: 0.01        # Final learning rate as a fraction of the initial rate = (lr0 * lrf), used in conjunction with schedulers to adjust the learning rate over time.
+dropout: 0.2     # Dropout rate for regularization in classification tasks, preventing overfitting by randomly omitting units during training.
+
+# extra training hyperparams 
+agnostic_nms: false  # enables class-agnostic Non-Maximum Suppression (NMS), which merges overlapping boxes of different classes. Useful in multi-class detection scenarios where class overlap is common.
+freeze: null         # Freezes the first N layers of the model or specified layers by index, reducing the number of trainable parameters. Useful for fine-tuning or transfer learning.
+classes: null        # Filters predictions to a set of class IDs. Only detections belonging to the specified classes will be returned. Useful for focusing on relevant objects in multi-class detection tasks.
+single_cls: false    # Treats all classes in multi-class datasets as a single class during training. Useful for binary classification tasks or when focusing on object presence rather than classification.
+cos_lr: true         # Utilizes a cosine learning rate scheduler, adjusting the learning rate following a cosine curve over epochs. Helps in managing learning rate for better convergence.
+
+# model saving
+save: true       # whether to save any model at all (should always be true)
+save_period: -1  # save every n epochs (-1 => only save best and last)
+plots: true      # save plots during train/val
+
+# useful augmentationsv 
+degrees: 180.0
+translate: 0.2
+scale: 0.5
+flipud: 0.5  # probabilities from here to mixup
+fliplr: 0.5
+mosaic: 0.2
+mixup: 0.2
+
+
+
+
+
+
+# -------------- Others that are likely not needed to be changed -----------------
+# Descriptions can be found at https://docs.ultralytics.com/usage/cfg/#modes:~:text=Modes%20Guide-,Train,-The%20training%20settings
+# NOTE that some of these overlap, so if in doubt, pl. check the link above thoroughly (e.g., save appears twice depending on what function is going on)
+
+# these two have no effect if calling .train() or .val() -- these functions would override the 
+task: detect  # should always be detect for this task (other options are segment or pose)
+mode: train     # train, val, or predict -> doesn't matter, since 
+
+
+# extra training hyperparams
+momentum: 0.937       # Momentum factor for SGD or beta1 for Adam optimizers, influencing the incorporation of past gradients in the current update.
+weight_decay: 0.0005  # L2 regularization term, penalizing large weights to prevent overfitting.
+warmup_epochs: 3.0    # Number of epochs for learning rate warmup, gradually increasing the learning rate from a low value to the initial learning rate to stabilize training early on.
+warmup_momentum: 0.8  # Initial momentum for warmup phase, gradually adjusting to the set momentum over the warmup period.
+warmup_bias_lr: 0.1   # Learning rate for bias parameters during the warmup phase, helping stabilize model training in the initial epochs.
+
+# loss weightage
+box: 7.5 
+cls: 0.5 
+kobj: 1.0
+dfl: 1.5  
+pose: 12.0
+
+
+# not so useful augmentations (e.g. color variation, affine/perspective transform)
+hsv_h: 0.0
+hsv_s: 0.0
+hsv_v: 0.0
+shear: 0.0
+perspective: 0.0
+copy_paste: 0.0
+
+
+# misc.
+exist_ok: false       # whether to overwrite existing experiment
+verbose: true         # providing detailed logs and progress updates. Useful for debugging and closely monitoring the training process
+cache: false          # Enables caching of dataset images in memory (True/ram), on disk (disk), or disables it (False). Improves training speed by reducing disk I/O at the cost of increased memory usage.
+workers: 8            # Number of worker threads for data loading, esp. useful in multi-gpu trainng
+seed: 0               # Sets the random seed for training, ensuring reproducibility of results across runs with the same configurations.
+deterministic: true   # Forces deterministic algorithm use, ensuring reproducibility but may affect performance and speed due to the restriction on non-deterministic algorithms.
+rect: false
+cos_lr: false
+close_mosaic: 10
+resume: false
+amp: true
+fraction: 1.0
+profile: false
+
+# for validation 
+val: true             # performvalidation after each train epoch
+split: val            # split to use for validation
+save_json: false
+save_hybrid: false
+conf: null
+max_det: 300
+dnn: false
+visualize: false  # Activates visualization of model features during inference, providing insights into what the model is "seeing". Useful for debugging and model interpretation.
+show_boxes: true
+
+
+# for visualization in .predict()
+# usually you'd just pass these in predict(), not 
+source: null
+show: false
+save_txt: false
+save_conf: false
+save_crop: false
+show_labels: true
+show_conf: true
+vid_stride: 1     # for tracking (frames)
+line_width: null   
+augment: false    # Enables test-time augmentation (TTA) for predictions
+
+
+# export settings
+format: torchscript
+keras: false
+optimize: false
+half: false
+int8: false
+dynamic: false
+simplify: false
+opset: null
+workspace: 4
+label_smoothing: 0.0
+nbs: 64
+
+
+# unused -- these are for segmentation
+overlap_mask: true
+mask_ratio: 4
+retina_masks: false
